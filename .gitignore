@@ -1,0 +1,4 @@
+.env
+.venv
+dataset/_01_raw
+dataset/_02_cleaned
