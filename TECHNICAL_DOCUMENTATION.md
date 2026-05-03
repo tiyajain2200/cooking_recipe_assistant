@@ -37,6 +37,20 @@ RAG improves LLM accuracy by providing it with specific, external data. Instead 
 ### Vector Embeddings & Semantic Search
 Standard search looks for exact words. **Semantic Search** looks for *meaning*. For example, searching for "spicy pasta" might find "Arrabbiata" even if the word "spicy" isn't in the title, because their "vectors" are mathematically close.
 
+### Basic Concepts and Definitions
+- **Python**: The backend language for this project. Python scripts are executed by the Python interpreter, and third-party libraries are installed through `requirements.txt`.
+- **Flask**: A lightweight web framework that turns Python functions into HTTP endpoints. It serves static files and handles the `/api/chat` request.
+- **HTML**: The structure of the frontend page. It defines elements like the chat window, input box, and buttons.
+- **CSS**: The style sheet that makes the app look visually consistent and readable.
+- **JavaScript**: The browser-side code that sends chat queries, receives streamed responses, and updates the UI.
+- **`.env`**: A configuration file used to store secrets and settings like `OLLAMA_BASE_URL`, `LLM_MODEL`, `EMBEDDING_MODEL`, and `TOP_K_RESULTS`.
+- **Embeddings**: Numeric vectors created from text. Similar text has similar embeddings.
+- **Vectors**: Lists of numbers that represent text meaning in a mathematical space.
+- **ChromaDB**: The database that stores these vectors and associated recipe metadata, allowing fast similarity search.
+- **Server-Sent Events (SSE)**: A streaming mechanism where the server pushes data to the browser in real time. In this app, SSE is used to display the AI response token by token.
+- **Prompt**: The text instructions given to the LLM. There are system prompts, user prompts, and context prompts. Together, they guide the model’s behavior and output format.
+- **RAG**: Combines retrieval from a database with generation from an LLM. This keeps answers grounded in actual recipe data and improves overall relevance.
+
 ---
 
 ## 4. Overall Project Flow
@@ -130,6 +144,12 @@ The RAG logic in `_03_rag.py` handles the core retrieval and augmentation:
 - **Embedding Model**: `nomic-embed-text` (via Ollama).
 - **LLM Model**: `qwen2.5:1.5b` (via Ollama).
 - **Batch Size for DB Population**: 100 recipes per batch.
+
+### Model Selection and Why These Models
+- **`nomic-embed-text`** is chosen for embeddings because it is optimized for semantic similarity and is available locally through Ollama. It produces compact vectors that capture the meaning of recipe titles and ingredients well, which makes the ChromaDB search more reliable than plain keyword matching.
+- **`qwen2.5:1.5b`** is used as the LLM because it balances response quality, speed, and local resource usage. It is smaller than very large models but still capable of generating coherent recipe instructions and following structured prompts. This makes it a practical choice for local deployment without requiring massive hardware.
+- **Why not use larger models?** Larger models can be more accurate but require much more RAM and slower response times on local machines. This project prioritizes a responsive local experience, so a mid-sized model is preferred.
+- **Why not use only internal LLM knowledge?** The RAG design uses the vector database to ground answers in actual recipes. This helps avoid hallucinations and improves relevance compared to asking the LLM to generate recipes from scratch.
 
 ### Additional Technical Details
 - **Collection Management**: ChromaDB collection is initialized once at app startup and reused for all queries.
