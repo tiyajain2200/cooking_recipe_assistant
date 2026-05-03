@@ -1,14 +1,6 @@
 pandas
 chromadb
 ollama
-sentence-transformers
-langchain
-langchain-community
-openai
-google-generativeai
 python-dotenv
-fastapi
-uvicorn
-jinja2
 flask
 flask-cors

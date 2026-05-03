@@ -70,21 +70,13 @@ def chat():
 
     # 2. Retrieve relevant recipes from ChromaDB
     context, min_dist = search_recipes(collection, cleaned)
+    
+    if context:
+        print(f"DEBUG: Context found (min_dist: {min_dist:.4f})")
+    else:
+        print(f"DEBUG: No relevant context found (min_dist: {min_dist:.4f})")
 
-    # 3. Decision Logic: Prioritize dataset if match is very strong
-    if context and min_dist < 0.45:
-        def generate_direct():
-            direct_message = (
-                "### 🎯 Found in Database\n\n"
-                "I found these great matches directly in my recipe collection:\n\n"
-                f"{context}"
-            )
-            yield f"data: {json.dumps({'token': direct_message})}\n\n"
-            yield f"data: {json.dumps({'done': True})}\n\n"
-        
-        return Response(generate_direct(), mimetype='text/event-stream')
-
-    # 4. Otherwise, use Ollama to process or provide a general answer
+    # 3. Use Ollama to process or provide a general answer
     if context:
         full_user_prompt = RAG_QUERY_PROMPT.format(
             context=context,
@@ -95,7 +87,7 @@ def chat():
             user_query=user_query
         )
 
-    # 5. Stream response from Ollama via SSE
+    # 4. Stream response from Ollama via SSE
     def generate():
         try:
             client = OllamaClient(host=OLLAMA_BASE_URL)

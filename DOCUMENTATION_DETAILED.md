@@ -49,12 +49,12 @@ The LLM (Ollama) reads the context and the user query, then generates a response
 ai_project/
 ├── backend/
 │   ├── app.py                  # Main Flask entry point
-│   ├── src/
+├── src/
 │   │   ├── _01_data_prep.py    # Dataset cleaning script
 │   │   ├── _02_vector_db.py    # Embedding & Database creation
-│   │   ├── _03_rag.py          # Search & Retrieval logic
-│   │   └── _04_ask_ai.py       # CLI-based testing script
+│   │   └── _03_rag.py          # Search & Retrieval logic
 │   ├── utils/
+
 │   │   ├── functions.py        # Shared helpers (Cleaning, DB Connect)
 │   │   └── prompts.py          # LLM instructions & Templates
 │   └── dataset/

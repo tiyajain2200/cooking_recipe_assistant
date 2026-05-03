@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(os.path.dirname(BASE_DIR), '.env'))
 
-TOP_K_RESULTS = 2 
-DISTANCE_THRESHOLD = 0.8 # Lower is more similar. 
+TOP_K_RESULTS = int(os.getenv('TOP_K_RESULTS', 3)) 
+DISTANCE_THRESHOLD = 1.0 # Higher is more inclusive. 
 
 def format_list_string(s):
     """Helper to parse a string that looks like a JSON list and format it."""
