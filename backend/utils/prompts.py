@@ -43,6 +43,7 @@ The following are relevant recipes found in our database:
 {context}
 ---
 Database titles: {source_titles}
+Match type: {match_type}
 
 USER REQUEST:
 {user_query}

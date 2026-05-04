@@ -69,10 +69,10 @@ def chat():
     cleaned = clean_query(user_query)
 
     # 2. Retrieve relevant recipes from ChromaDB
-    context, min_dist, matched_titles = search_recipes(collection, cleaned)
+    context, min_dist, matched_titles, match_type = search_recipes(collection, cleaned)
     
     if context:
-        print(f"DEBUG: Context found (min_dist: {min_dist:.4f}) titles={matched_titles}")
+        print(f"DEBUG: Context found (min_dist: {min_dist:.4f}) titles={matched_titles} type={match_type}")
     else:
         print(f"DEBUG: No relevant context found (min_dist: {min_dist:.4f})")
 
@@ -81,7 +81,8 @@ def chat():
         full_user_prompt = RAG_QUERY_PROMPT.format(
             context=context,
             user_query=user_query,
-            source_titles=', '.join(matched_titles)
+            source_titles=', '.join(matched_titles),
+            match_type=match_type
         )
     else:
         full_user_prompt = GENERAL_QUERY_PROMPT.format(
