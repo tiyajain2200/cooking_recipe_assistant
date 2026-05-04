@@ -1,11 +1,15 @@
 import pandas as pd
 import chromadb
 import os
+import sys
 from chromadb.utils import embedding_functions 
 from ollama import Client as OllamaClient, ResponseError
 
 # Build paths relative to this file's location
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Add backend dir to sys.path so we can import our modules
+sys.path.insert(0, BASE_DIR)
 
 from dotenv import load_dotenv
 
@@ -15,7 +19,7 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
 EMBEDDING_MODEL  = os.getenv('EMBEDDING_MODEL')
 
 
-from backend.utils.functions import get_ollama_embedding_function
+from utils.functions import get_ollama_embedding_function
 
 def create_and_populate_db(df):
     print(f"Initializing local Chroma Vector DB with Ollama ({EMBEDDING_MODEL})...")
