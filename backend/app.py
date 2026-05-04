@@ -69,18 +69,19 @@ def chat():
     cleaned = clean_query(user_query)
 
     # 2. Retrieve relevant recipes from ChromaDB
-    context, min_dist = search_recipes(collection, cleaned)
+    context, min_dist, matched_titles = search_recipes(collection, cleaned)
     
     if context:
-        print(f"DEBUG: Context found (min_dist: {min_dist:.4f})")
+        print(f"DEBUG: Context found (min_dist: {min_dist:.4f}) titles={matched_titles}")
     else:
         print(f"DEBUG: No relevant context found (min_dist: {min_dist:.4f})")
 
     # 3. Use Ollama to process or provide a general answer
-    if context:
+    if context and matched_titles:
         full_user_prompt = RAG_QUERY_PROMPT.format(
             context=context,
-            user_query=user_query
+            user_query=user_query,
+            source_titles=', '.join(matched_titles)
         )
     else:
         full_user_prompt = GENERAL_QUERY_PROMPT.format(

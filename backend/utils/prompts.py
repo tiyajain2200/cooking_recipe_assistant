@@ -42,18 +42,19 @@ The following are relevant recipes found in our database:
 ---
 {context}
 ---
+Database titles: {source_titles}
 
 USER REQUEST:
 {user_query}
 
 INSTRUCTIONS:
-1. If the context contains a recipe that matches the user's request, provide it exactly as found, but nicely formatted.
+1. If the context contains a recipe that matches the user's request exactly or very closely, provide it as found.
    Set 'Source' to: 'Recipe Database (Title of the recipe)'
-2. If the context is somewhat relevant but doesn't perfectly match, use it as a base and adapt it to the user's request.
+2. If the context contains a recipe that is somewhat related but needs adaptation to match the user's request, adapt it.
    Set 'Source' to: 'Recipe Database (Adapted from: Title of the recipe)'
-3. If the user is asking for a recipe that is NOT in the context, use your own knowledge to provide one.
+3. If the context does not contain a relevant recipe, use your own knowledge to create one.
    Set 'Source' to: 'Chef's Internal Knowledge'
-4. If the user is just asking for general cooking advice, provide it and set 'Source' to 'Chef's Internal Knowledge'.
+4. If the user asks for general cooking advice, provide it and set 'Source' to: 'Chef's Internal Knowledge'.
 
 Always use the RECIPE_OUTPUT_FORMAT for any recipe provided.
 """

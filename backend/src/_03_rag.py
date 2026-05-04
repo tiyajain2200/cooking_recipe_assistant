@@ -53,9 +53,27 @@ def format_list_string(s):
     
     return cleaned_s
 
+def has_keyword_overlap(query: str, title: str, ingredients: str) -> bool:
+    """Check if query keywords appear in recipe title or ingredients."""
+    # Common stop words that don't matter for relevance
+    stop_words = {'a', 'an', 'the', 'and', 'or', 'is', 'are', 'to', 'of', 'in', 'with', 'for', 'from', 'by'}
+    
+    # Extract words from query
+    query_words = set(w.lower().strip(',.!?') for w in query.split() if w.lower() not in stop_words and len(w) > 2)
+    
+    # Combined text from recipe
+    combined = (str(title) + " " + str(ingredients)).lower()
+    
+    # Check for keyword overlap
+    for word in query_words:
+        if word in combined:
+            return True
+    
+    return False
+
 def search_recipes(collection, query: str, n_results: int = TOP_K_RESULTS):
     if not query.strip():
-        return None, 2.0
+        return None, 2.0, []
 
     results = collection.query(
         query_texts=[query],
@@ -63,9 +81,10 @@ def search_recipes(collection, query: str, n_results: int = TOP_K_RESULTS):
     )
 
     if not results or not results["metadatas"] or not results["metadatas"][0]:
-        return None, 2.0
+        return None, 2.0, []
 
     context_parts = []
+    matched_titles = []
     min_distance = 2.0
     
     for i, (metadata, distance) in enumerate(zip(results["metadatas"][0], results["distances"][0]), start=1):
@@ -79,6 +98,10 @@ def search_recipes(collection, query: str, n_results: int = TOP_K_RESULTS):
         title = metadata.get("title", "Unknown")
         ingredients = metadata.get("ingredients", "[]")
         instructions = metadata.get("instructions", "[]")
+        
+        # Only include if there's actual keyword relevance to the query
+        if not has_keyword_overlap(query, title, ingredients):
+            continue
 
         formatted_ingredients = format_list_string(ingredients)
         formatted_instructions = format_list_string(instructions)
@@ -88,8 +111,10 @@ def search_recipes(collection, query: str, n_results: int = TOP_K_RESULTS):
             f"**Ingredients:**\n{formatted_ingredients}\n\n"
             f"**Instructions:**\n{formatted_instructions}\n"
         )
+        matched_titles.append(title)
 
     if not context_parts:
-        return None, min_distance
+        return None, min_distance, []
 
-    return "\n---\n".join(context_parts), min_distance
+    return "\n---\n".join(context_parts), min_distance, matched_titles
+
